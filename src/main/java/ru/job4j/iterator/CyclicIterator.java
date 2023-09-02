@@ -16,7 +16,7 @@ public class CyclicIterator<T> implements Iterator<T> {
     @Override
     public boolean hasNext() {
         counter = counter == data.size() ? 0 : counter;
-        return data.listIterator(counter).hasNext();
+        return counter < data.size();
     }
 
     @Override
@@ -24,6 +24,6 @@ public class CyclicIterator<T> implements Iterator<T> {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        return data.listIterator(counter++).next();
+        return data.get(counter++);
     }
 }
