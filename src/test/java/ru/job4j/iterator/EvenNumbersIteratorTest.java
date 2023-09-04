@@ -2,7 +2,6 @@ package ru.job4j.iterator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
