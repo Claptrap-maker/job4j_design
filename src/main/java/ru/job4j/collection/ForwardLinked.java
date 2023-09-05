@@ -42,7 +42,6 @@ public class ForwardLinked<T> implements SimpleLinked<T> {
         head = newNode;
         if (next != null) {
             newNode.next = next;
-            head.next = next;
         }
         size++;
         modCount++;
