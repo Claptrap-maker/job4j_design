@@ -55,7 +55,6 @@ public class ForwardLinked<T> implements SimpleLinked<T> {
         Node<T> deletedNode = head;
         head = deletedNode.next;
         if (head != null) {
-            head.next = deletedNode.next.next;
             deletedNode.next = null;
         }
         T deletedItem = deletedNode.item;
