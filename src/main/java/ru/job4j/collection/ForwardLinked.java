@@ -37,12 +37,7 @@ public class ForwardLinked<T> implements SimpleLinked<T> {
     }
 
     public void addFirst(T value) {
-        Node<T> newNode = new Node<>(value, null);
-        Node<T> next = head;
-        head = newNode;
-        if (next != null) {
-            newNode.next = next;
-        }
+        head = new Node<>(value, head);
         size++;
         modCount++;
     }
