@@ -36,16 +36,32 @@ public class ForwardLinked<T> implements SimpleLinked<T> {
         return curr.item;
     }
 
+    public void addFirst(T value) {
+        Node<T> newNode = new Node<>(value, null);
+        Node<T> next = head;
+        head = newNode;
+        if (next != null) {
+            newNode.next = next;
+            head.next = next;
+        }
+        size++;
+        modCount++;
+    }
+
     public T deleteFirst() {
-        if (head == null) {
+        if (size == 0) {
             throw new NoSuchElementException();
         }
         Node<T> deletedNode = head;
         head = deletedNode.next;
-        head.next = deletedNode.next.next;
-        deletedNode.next = null;
+        if (head != null) {
+            head.next = deletedNode.next.next;
+            deletedNode.next = null;
+        }
         T deletedItem = deletedNode.item;
         deletedNode.item = null;
+        size--;
+        modCount++;
         return deletedItem;
     }
 
