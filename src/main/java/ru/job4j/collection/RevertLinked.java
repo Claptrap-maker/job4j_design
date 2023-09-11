@@ -30,9 +30,8 @@ public class RevertLinked<T> implements Iterable<T> {
                 curr = next;
             }
             head = prev;
-            return true;
         }
-        return false;
+        return head != null && head.next != null;
     }
 
     @Override
