@@ -26,6 +26,7 @@ public class SimpleArraySet<T> implements SimpleSet<T> {
         while (iterator.hasNext()) {
             if (Objects.equals(iterator.next(), value)) {
                 rsl = true;
+                break;
             }
         }
         return rsl;
