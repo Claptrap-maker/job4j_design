@@ -18,7 +18,7 @@ public class NonCollisionMap<K, V> implements SimpleMap<K, V> {
     public boolean put(K key, V value) {
         boolean rsl = false;
 
-        if (count * 1.0f / capacity >= LOAD_FACTOR) {
+        if (capacity * LOAD_FACTOR <= count) {
             expand();
         }
 
