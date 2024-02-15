@@ -1,7 +1,6 @@
 package ru.job4j.map;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class NonCollisionMap<K, V> implements SimpleMap<K, V> {
 
@@ -17,12 +16,13 @@ public class NonCollisionMap<K, V> implements SimpleMap<K, V> {
 
     @Override
     public boolean put(K key, V value) {
-        if ((float) count / (float) capacity >= LOAD_FACTOR) {
+        boolean rsl = false;
+
+        if (count * 1.0f / capacity >= LOAD_FACTOR) {
             expand();
         }
 
-        boolean rsl = false;
-        int index = indexFor(hash(Objects.hashCode(key)));
+        int index = getIndex(key);
 
         if (table[index] == null) {
             table[index] = new MapEntry<>(key, value);
@@ -33,8 +33,12 @@ public class NonCollisionMap<K, V> implements SimpleMap<K, V> {
         return rsl;
     }
 
+    private int getIndex(K key) {
+        return indexFor(hash(Objects.hashCode(key)));
+    }
+
     private int hash(int hashCode) {
-        return (hashCode == 0) ? 0 : hashCode ^ (hashCode >>> 16);
+        return hashCode ^ (hashCode >>> 16);
     }
 
     private int indexFor(int hash) {
@@ -43,47 +47,44 @@ public class NonCollisionMap<K, V> implements SimpleMap<K, V> {
 
     private void expand() {
         capacity *= 2;
-        Predicate<NonCollisionMap.MapEntry<K, V>> expandCondition =
-                Objects::nonNull;
-        getNewTable(expandCondition);
+        MapEntry<K, V>[] newTable = new MapEntry[capacity];
+        for (MapEntry<K, V> entry : table) {
+            if (entry != null) {
+                int newIndex = getIndex(entry.key);
+                newTable[newIndex] = entry;
+            }
+        }
+        table = Arrays.copyOf(newTable, capacity);
     }
 
     @Override
     public V get(K key) {
-        int index = indexFor(hash(Objects.hashCode(key)));
+        V value = null;
+        int index = getIndex(key);
         if (table[index] != null) {
             K foundKey = table[index].key;
-            if (Objects.hashCode(foundKey) == Objects.hashCode(key)
-                    && Objects.equals(key, foundKey)) {
-                return table[index].value;
+            if (isKeyEqual(key, foundKey)) {
+                value = table[index].value;
             }
         }
-        return null;
+        return value;
+    }
+
+    private boolean isKeyEqual(K key, K foundKey) {
+        return Objects.hashCode(foundKey) == Objects.hashCode(key)
+                && Objects.equals(key, foundKey);
     }
 
     @Override
     public boolean remove(K key) {
         boolean rsl = false;
         if (this.get(key) != null) {
-            Predicate<NonCollisionMap.MapEntry<K, V>> removeCondition =
-                    entry -> entry != null && !Objects.equals(entry.key, key);
-            getNewTable(removeCondition);
+            table[getIndex(key)] = null;
             modCount++;
             count--;
             rsl = true;
         }
         return rsl;
-    }
-
-    private void getNewTable(Predicate<NonCollisionMap.MapEntry<K, V>> condition) {
-        MapEntry<K, V>[] newTable = new MapEntry[capacity];
-        for (MapEntry<K, V> entry : table) {
-            if (condition.test(entry)) {
-                int newIndex = indexFor(hash(Objects.hashCode(entry.key)));
-                newTable[newIndex] = entry;
-            }
-        }
-        table = Arrays.copyOf(newTable, capacity);
     }
 
     @Override
