@@ -8,7 +8,7 @@ public class ResultFile {
                 new BufferedOutputStream(
                         new FileOutputStream("data/result.txt")))) {
             output.println("Hello, world!");
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
