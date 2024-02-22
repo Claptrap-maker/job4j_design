@@ -1,39 +1,37 @@
 package ru.job4j.io;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.function.BiFunction;
 
 public class Analysis {
     public void unavailable(String source, String target) {
-        List<String> resultList = new ArrayList<>();
-        List<String> list = null;
-        StringBuilder sb = null;
-        boolean flag = false;
-        try (BufferedReader reader = new BufferedReader(new FileReader(source))) {
-            list = reader.lines().toList();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        for (String s : list) {
-            if ((s.startsWith("400") || s.startsWith("500")) && !flag) {
-                sb = new StringBuilder();
-                sb.append(s.split(" ")[1]);
-                sb.append(";");
-                flag = true;
+        StringBuilder builder = new StringBuilder();
+        BiFunction<String, StringBuilder, StringBuilder> function = (s, sb) -> {
+            StringBuilder result = new StringBuilder();
+            String[] buff = s.split(" ");
+            int size = sb.toString().split(";").length;
+            if (size % 2 != 0 && size != 1) {
+                sb.setLength(0);
             }
-            if (flag && (s.startsWith("200") || s.startsWith("300"))) {
-                sb.append(s.split(" ")[1]);
+            if (("400".equals(buff[0]) || "500".equals(buff[0])) && "".equals(sb.toString())) {
+                sb.append(buff[1]);
                 sb.append(";");
-                resultList.add(sb.toString());
-                flag = false;
             }
-        }
-        try (PrintWriter writer = new PrintWriter(target)) {
+            if (!"".equals(sb.toString()) && ("200".equals(buff[0]) || "300".equals(buff[0]))) {
+                sb.append(buff[1]);
+                sb.append(";\n");
+                result = sb;
+            }
+            return result;
+        };
+        try (BufferedReader reader = new BufferedReader(new FileReader(source));
+             PrintWriter writer = new PrintWriter(target)) {
             writer.println(target.split("\\.")[1]);
-            for (String s : resultList) {
-                writer.println(s);
-            }
+            reader.lines()
+                    .forEachOrdered(line -> writer.print(function.apply(line, builder)));
         } catch (IOException e) {
             e.printStackTrace();
         }
