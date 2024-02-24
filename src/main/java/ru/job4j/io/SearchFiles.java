@@ -13,9 +13,9 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class SearchFiles implements FileVisitor<Path> {
 
-    List<Path> paths = new ArrayList<>();
+    private List<Path> paths = new ArrayList<>();
 
-    Predicate<Path> condition;
+    private Predicate<Path> condition;
 
     public SearchFiles(Predicate<Path> condition) {
         this.condition = condition;
@@ -47,6 +47,4 @@ public class SearchFiles implements FileVisitor<Path> {
     public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
         return CONTINUE;
     }
-
-
 }
