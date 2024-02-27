@@ -9,13 +9,32 @@ import java.util.function.Predicate;
 
 public class Search {
     public static void main(String[] args) throws IOException {
-        Path start = Paths.get(".");
-        search(start, path -> path.toFile().getName().endsWith(".js")).forEach(System.out::println);
+        validateArgs(args);
+        Path start = Paths.get(args[0]);
+        search(start, path -> path.toFile().getName().endsWith(args[1])).forEach(System.out::println);
     }
 
     public static List<Path> search(Path root, Predicate<Path> condition) throws IOException {
         SearchFiles searcher = new SearchFiles(condition);
         Files.walkFileTree(root, searcher);
         return searcher.getPaths();
+    }
+
+    public static void validateArgs(String[] args) {
+        if (args.length == 0) {
+            throw new IllegalArgumentException("Root folder and file extension, to be searched for, are null.");
+        }
+        if (args.length == 1) {
+            throw new IllegalArgumentException("Root folder or file extension, to be searched for, is null.");
+        }
+        if (args.length > 2) {
+            throw new IllegalArgumentException("You passed more than two arguments");
+        }
+        if (!Files.isDirectory(Paths.get(args[0]))) {
+            throw new IllegalArgumentException("Your first argument is not a directory");
+        }
+        if (!args[1].startsWith(".")) {
+            throw new IllegalArgumentException("Your second argument is not a file extension");
+        }
     }
 }
