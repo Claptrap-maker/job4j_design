@@ -16,8 +16,8 @@ public class Analysis {
                 String[] buff = s.split(" ");
                 if ((!flag && ("400".equals(buff[0]) || "500".equals(buff[0])))
                         || (flag && ("200".equals(buff[0]) || "300".equals(buff[0])))) {
-                    String separator = !flag ? ";" : ";\n";
-                    writer.print(buff[1] + separator);
+                    String separator = !flag ? ";" : ";" + System.lineSeparator();
+                    writer.append(buff[1]).append(separator);
                     flag = !flag;
                 }
             }
