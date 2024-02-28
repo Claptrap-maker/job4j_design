@@ -31,7 +31,7 @@ public class ArgsName {
             if (!s.contains("=")) {
                 throw new IllegalArgumentException("Error: This argument '" + s + "' does not contain an equal sign");
             }
-            if (s.indexOf('-') + 1 == s.indexOf('=')) {
+            if (s.startsWith("-=")) {
                 throw new IllegalArgumentException("Error: This argument '" + s + "' does not contain a key");
             }
             if (s.indexOf('=') == s.length() - 1) {
