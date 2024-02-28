@@ -13,20 +13,16 @@ import java.util.Set;
 
 public class DuplicatesVisitor extends SimpleFileVisitor<Path> {
 
-    HashMap<FileProperty, Set<String>> map = new HashMap<>();
+    private Map<FileProperty, Set<String>> map = new HashMap<>();
 
     @Override
     public FileVisitResult visitFile(Path file,
                                      BasicFileAttributes attributes) throws IOException {
         if (Files.isRegularFile(file)) {
             FileProperty fileProperty = new FileProperty(Files.size(file), file.getFileName().toString());
-            if (!map.containsKey(fileProperty)) {
-                map.put(fileProperty, new HashSet<>());
-            }
-            Set<String> paths = map.get(fileProperty);
-            paths.add(file.toAbsolutePath().toString());
+            map.computeIfAbsent(fileProperty, path -> new HashSet<>())
+                    .add(file.toAbsolutePath().toString());
         }
-
         return super.visitFile(file, attributes);
     }
 
@@ -39,6 +35,4 @@ public class DuplicatesVisitor extends SimpleFileVisitor<Path> {
             }
         }
     }
-
-
 }
