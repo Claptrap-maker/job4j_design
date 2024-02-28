@@ -21,14 +21,8 @@ public class Search {
     }
 
     public static void validateArgs(String[] args) {
-        if (args.length == 0) {
-            throw new IllegalArgumentException("Root folder and file extension, to be searched for, are null.");
-        }
-        if (args.length == 1) {
-            throw new IllegalArgumentException("Root folder or file extension, to be searched for, is null.");
-        }
-        if (args.length > 2) {
-            throw new IllegalArgumentException("You passed more than two arguments");
+        if (args.length != 2) {
+            throw new IllegalArgumentException("Wrong number of arguments");
         }
         if (!Files.isDirectory(Paths.get(args[0]))) {
             throw new IllegalArgumentException("Your first argument is not a directory");
