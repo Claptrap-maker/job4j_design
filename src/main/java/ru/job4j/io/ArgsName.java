@@ -1,7 +1,5 @@
 package ru.job4j.io;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,38 +16,13 @@ public class ArgsName {
     private void parse(String[] args) {
         for (String s : args) {
             int index = s.indexOf('=');
-            String key = s.substring(1, index);
-            String value = s.substring(index + 1);
-            validate(key, value);
-            values.put(key, value);
-        }
-    }
-
-    private static void validate(String key, String value) {
-        switch (key) {
-            case "d":
-                if (Files.notExists(Path.of(value))) {
-                    throw new IllegalArgumentException("The directory to be archived does not exist");
-                }
-                break;
-            case "e":
-                if (!value.startsWith(".")) {
-                    throw new IllegalArgumentException("The extension has wrong format");
-                }
-                break;
-            case "o":
-                if (!value.contains(".zip")) {
-                    throw new IllegalArgumentException("The archive name does not have '.zip' extension");
-                }
-                break;
-            default:
-                break;
+            values.put(s.substring(1, index), s.substring(index + 1));
         }
     }
 
     public static ArgsName of(String[] args) {
-        if (args.length != 3) {
-            throw new IllegalArgumentException("Wrong number of arguments");
+        if (args.length == 0) {
+            throw new IllegalArgumentException("Arguments not passed to program");
         }
         for (String s : args) {
             if (!s.startsWith("-")) {
