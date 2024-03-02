@@ -34,17 +34,22 @@ public class ConsoleChat {
         while (!OUT.equals(userWord)) {
             userWord = scanner.nextLine();
             log.add(userWord);
-            switch (userWord) {
-                case CONTINUE -> isContinue = true;
-                case STOP -> isContinue = false;
-                case OUT -> saveLog(log);
-                default -> {
-                    if (isContinue) {
-                        String botAnswer = randomPhrase(phrases);
-                        System.out.println(botAnswer);
-                        log.add(botAnswer);
-                    }
-                }
+            if (CONTINUE.equals(userWord)) {
+                isContinue = true;
+                continue;
+            }
+            if (STOP.equals(userWord)) {
+                isContinue = false;
+                continue;
+            }
+            if (OUT.equals(userWord)) {
+                saveLog(log);
+                continue;
+            }
+            if (isContinue) {
+                String botAnswer = randomPhrase(phrases);
+                System.out.println(botAnswer);
+                log.add(botAnswer);
             }
         }
     }
