@@ -2,6 +2,8 @@ package ru.job4j.io;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import java.io.File;
 import java.nio.file.Path;
@@ -60,5 +62,26 @@ class CSVReaderTest {
         ).concat(System.lineSeparator());
         CSVReader.handle(argsName);
         assertThat(Files.readString(target.toPath())).isEqualTo(expected);
+    }
+
+    @Test
+    void whenFilterThenException(@TempDir Path folder) throws Exception {
+        String data = String.join(
+                System.lineSeparator(),
+                "name,age,last_name,education",
+                "Tom,20,Smith,Bachelor",
+                "Jack,25,Johnson,Undergraduate",
+                "William,30,Brown,Secondary special"
+        );
+        File file = folder.resolve("source.txt").toFile();
+        File target = folder.resolve("target.csv").toFile();
+        ArgsName argsName = ArgsName.of(new String[]{
+                "-path=" + file.getAbsolutePath(), "-delimiter=,",
+                "-out=" + target.getAbsolutePath(), "-filter=education,age,last_name"
+        });
+        Files.writeString(file.toPath(), data);
+        assertThatThrownBy(() -> CSVReader.handle(argsName))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Wrong extension format");
     }
 }

@@ -11,10 +11,10 @@ import java.util.Scanner;
 
 public class CSVReader {
 
-    public static ArrayList<String> array = new ArrayList<>();
-
     public static void handle(ArgsName argsName) throws Exception {
-        array.addAll(Arrays.asList(argsName.get("filter").split(",")));
+        validate("path", argsName.get("path"));
+        ArrayList<String> array = new ArrayList<>(
+                Arrays.asList(argsName.get("filter").split(",")));
         boolean isFirstString = true;
         int[] indexes = new int[array.size()];
         StringBuilder builder = new StringBuilder();
@@ -50,7 +50,6 @@ public class CSVReader {
 
     public static void main(String[] args) throws Exception {
         ArgsName argsName = ArgsName.of(args);
-        validate("path", argsName.get("path"));
         handle(argsName);
     }
 
